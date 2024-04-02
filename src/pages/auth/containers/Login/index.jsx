@@ -36,14 +36,8 @@ export class Login extends Component {
   }
 
   componentDidMount() {
-    this.getDomains();
     this.getRegions();
     this.getSSO();
-  }
-
-  async getDomains() {
-    await this.store.fetchDomainList();
-    this.updateDefaultValue();
   }
 
   async getRegions() {
@@ -69,20 +63,14 @@ export class Login extends Component {
   }
 
   get productName() {
-    const { product_name = { zh: t('Cloud Platform'), en: 'Cloud Platform' } } =
-      this.info;
+    const {
+      product_name = { zh: t('Cloud Platform'), en: t('Cloud Platform') },
+    } = this.info;
     const { getLocaleShortName } = i18n;
     const language = getLocaleShortName();
     const name =
       product_name[language] || t('Cloud Platform') || 'Cloud Platform';
     return t('Welcome, {name}', { name });
-  }
-
-  get domains() {
-    return (this.store.domains || []).map((it) => ({
-      label: it,
-      value: it,
-    }));
   }
 
   get regions() {
@@ -165,9 +153,6 @@ export class Login extends Component {
     if (this.regions.length === 1) {
       data.region = this.regions[0].value;
     }
-    if (this.domains.length === 1) {
-      data.domain = this.domains[0].value;
-    }
     return data;
   }
 
@@ -200,10 +185,8 @@ export class Login extends Component {
     const domainItem = {
       name: 'domain',
       required: true,
-      message: t('Please select your Domain!'),
-      render: () => (
-        <Select placeholder={t('Select a domain')} options={this.domains} />
-      ),
+      message: t('Tenancy ID Required!'),
+      render: () => <Input placeholder={t('Enter your tenancy ID')} />,
     };
     const usernameItem = {
       name: 'username',
@@ -219,7 +202,7 @@ export class Login extends Component {
     };
     const extraItem = {
       name: 'extra',
-      hidden: true,
+      hidden: false,
       render: () => (
         <Row gutter={8}>
           <Col span={12}>

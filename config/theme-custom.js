@@ -13,13 +13,13 @@
 // limitations under the License.
 
 module.exports = {
-  'primary-color': '#0C63FA',
-  'link-color': '#0C63FA',
+  'primary-color': '#ed3d8a',
+  'link-color': '#ed3d8a',
   'success-color': '#52C41A',
   'warning-color': '#FAAD14',
   'error-color': '#D40000',
-  'btn-default-color': '#0C63FA',
-  'btn-default-border': '#0C63FA',
+  'btn-default-color': '#ed3d8a',
+  'btn-default-border': '#ed3d8a',
   'border-color-base': '#E8E8EA',
   'border-radius-base': '2px',
   'font-size-base': '12px',

@@ -12,12 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import moment from 'moment';
 import 'moment/locale/zh-cn';
+
 import _, { isArray } from 'lodash';
+import moment from 'moment';
 import cookie from 'utils/cookie';
-import SLI18n from 'utils/translate';
 import { setLocalStorageItem } from 'utils/local-storage';
+import SLI18n from 'utils/translate';
 
 import locales from '../locales';
 
@@ -30,34 +31,6 @@ const SUPPORT_LOCALES_ALL = [
     shortName: 'en',
     icon: 'en',
     momentName: 'en',
-  },
-  {
-    name: '简体中文',
-    value: 'zh-hans',
-    shortName: 'zh',
-    icon: 'zh',
-    momentName: 'zhCN',
-  },
-  {
-    name: '한글',
-    value: 'ko-kr',
-    shortName: 'ko',
-    icon: 'ko',
-    momentName: 'ko',
-  },
-  {
-    name: 'Türkçe',
-    value: 'tr-tr',
-    shortname: 'tr',
-    icon: 'tr',
-    momentName: 'tr',
-  },
-  {
-    name: 'Русский',
-    value: 'ru',
-    shortname: 'ru',
-    icon: 'ru',
-    momentName: 'ru',
   },
 ];
 
@@ -174,24 +147,24 @@ const init = () => {
     });
   } else if (lang === 'tr-tr') {
     moment.locale('tr', {
-      months: 'Ocak_Şubat_Mart_Nisan_Mayıs_Haziran_Temmuz_Ağustos_Eylül_Ekim_Kasım_Aralık'.split(
-        '_'
-      ),
+      months:
+        'Ocak_Şubat_Mart_Nisan_Mayıs_Haziran_Temmuz_Ağustos_Eylül_Ekim_Kasım_Aralık'.split(
+          '_'
+        ),
       monthsShort: 'Oca_Şub_Mar_Nis_May_Haz_Tem_Ağu_Eyl_Eki_Kas_Ara'.split('_'),
       weekdays: 'Pazar_Pazartesi_Salı_Çarşamba_Perşembe_Cuma_Cumartesi'.split(
         '_'
       ),
       weekdaysShort: 'Paz_Pzt_Sal_Çar_Per_Cum_Cmt'.split('_'),
       weekdaysMin: 'Pz_Pt_Sa_Ça_Pe_Cu_Ct'.split('_'),
-      meridiem: function (hours, minutes, isLower) {
+      meridiem(hours, minutes, isLower) {
         if (hours < 12) {
           return isLower ? 'öö' : 'ÖÖ';
-        } else {
-          return isLower ? 'ös' : 'ÖS';
         }
+        return isLower ? 'ös' : 'ÖS';
       },
       meridiemParse: /öö|ÖÖ|ös|ÖS/,
-      isPM: function (input) {
+      isPM(input) {
         return input === 'ös' || input === 'ÖS';
       },
       longDateFormat: {
@@ -251,24 +224,25 @@ const init = () => {
     });
   } else if (lang === 'ru') {
     moment.locale('ru', {
-      months: 'Январь_Февраль_Март_Апрель_Май_Июнь_Июль_Август_Сентябрь_Октябрь_Ноябрь_Декабрь'.split(
-        '_'
-      ),
+      months:
+        'Январь_Февраль_Март_Апрель_Май_Июнь_Июль_Август_Сентябрь_Октябрь_Ноябрь_Декабрь'.split(
+          '_'
+        ),
       monthsShort: 'Янв_Фев_Мрт_Апр_Май_Июн_Июл_Авг_Сен_Окт_Нбр_Дек'.split('_'),
-      weekdays: 'Воскресенье_Понедельник_Вторник_Среда_Четверг_Пятница_Суббота'.split(
-        '_'
-      ),
+      weekdays:
+        'Воскресенье_Понедельник_Вторник_Среда_Четверг_Пятница_Суббота'.split(
+          '_'
+        ),
       weekdaysShort: 'Пон_Втор_Сред_Четв_Пятн_Субб_Воскр'.split('_'),
       weekdaysMin: 'Пн_Вт_Ср_Чт_Пт_Сб_Вс'.split('_'),
-      meridiem: function (hours, minutes, isLower) {
+      meridiem(hours, minutes, isLower) {
         if (hours < 12) {
           return isLower ? 'ночи' : 'Ночи';
-        } else {
-          return isLower ? 'дня' : 'Дня';
         }
+        return isLower ? 'дня' : 'Дня';
       },
       meridiemParse: /ночи|Ночи|дня|Дня/,
-      isPM: function (input) {
+      isPM(input) {
         return input === 'дня' || input === 'Дня';
       },
       longDateFormat: {
