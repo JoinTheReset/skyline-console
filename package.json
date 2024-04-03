@@ -59,6 +59,8 @@
     "cookie": "^0.4.1",
     "escape-html": "^1.0.3",
     "file-saver": "^2.0.2",
+    "formik": "^2.4.5",
+    "formik-wizard-form": "^2.1.0",
     "history": "4.7.2",
     "html-entities": "^2.3.5",
     "intersection-observer": "^0.11.0",
@@ -78,12 +80,15 @@
     "qs": "^6.9.4",
     "react": "^16.13.1",
     "react-ace": "^9.2.0",
+    "react-country-region-selector": "^3.6.1",
     "react-document-title": "^2.0.3",
     "react-dom": "^16.13.1",
     "react-fast-compare": "^3.0.1",
+    "react-google-autocomplete": "^2.7.3",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.14.3",

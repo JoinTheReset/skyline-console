@@ -37,6 +37,10 @@ export default [
         redirect: { from: '/login', to: '/auth/login', exact: true },
       },
       {
+        path: '/signup',
+        redirect: { from: '/signup', to: '/auth/register', exact: true },
+      },
+      {
         path: '/auth',
         component: Auth,
       },

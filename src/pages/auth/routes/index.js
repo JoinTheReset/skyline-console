@@ -13,8 +13,10 @@
 // limitations under the License.
 
 import AuthLayout from 'layouts/Auth';
-import Login from '../containers/Login';
+
 import ChangePassword from '../containers/ChangePassword';
+import Login from '../containers/Login';
+import Register from '../containers/Register';
 
 const PATH = '/auth';
 export default [
@@ -24,10 +26,11 @@ export default [
     routes: [
       { path: `${PATH}/login`, component: Login, exact: true },
       {
-        path: `${PATH}/change-password`,
+        path: `${PATH}/password`,
         component: ChangePassword,
         exact: true,
       },
+      { path: `${PATH}/register`, component: Register, exact: true },
     ],
   },
 ];

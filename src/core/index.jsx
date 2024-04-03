@@ -64,7 +64,11 @@ const render = (component) => {
 
 const getUser = async (callback) => {
   const currentPath = window.location.pathname;
-  if (currentPath.indexOf('/login') < 0) {
+  if (
+    currentPath.indexOf('/login') < 0 &&
+    currentPath.indexOf('/register') < 0 &&
+    currentPath.indexOf('/signup') < 0
+  ) {
     try {
       await store.getUserProfileAndPolicy();
     } catch (e) {
