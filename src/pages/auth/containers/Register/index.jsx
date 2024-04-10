@@ -16,11 +16,13 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { FormikWizard } from 'formik-wizard-form';
 import globalSkylineStore from 'stores/skyline/skyline';
+import globalOtpStore from 'stores/billing/otp';
 import { Row, Steps, Space, Button } from 'antd';
 import * as Yup from 'yup';
 
 import CountryDetails from './CountryDetails';
 import ContactDetails from './ContactDetails';
+import VerificationDetails from './VerificationDetails';
 
 const { Step } = Steps;
 const StepDivision = 33.33;
@@ -29,15 +31,28 @@ export class Register extends Component {
   constructor(props) {
     super(props);
     this.init();
+    const isTesting = true;
     this.state = {
       error: false, // eslint-disable-line react/no-unused-state
       initialValues: {
-        email: '',
-        password: '',
-        firstName: '',
-        lastName: '',
-        country: '',
-        should_hide_address_results: true,
+        account: {
+          email: isTesting ? 'k@rl.ag' : '',
+          emailConfirmation: isTesting ? 'k@rl.ag' : '',
+          firstName: isTesting ? 'Karl' : '',
+          lastName: isTesting ? 'Kloppenborg' : '',
+          password: isTesting ? 'P@ssw0rd' : '',
+          passwordConfirmation: isTesting ? 'P@ssw0rd' : '',
+          otpCode: '',
+          mobile: isTesting ? '+61437239565' : '',
+        },
+        address: {
+          addressline1: isTesting ? '589 Paine Street' : '',
+          addressline2: '',
+          city: isTesting ? 'Albury' : '',
+          state: isTesting ? 'New South Wales' : '',
+          country: isTesting ? 'Australia' : '',
+          postalCode: isTesting ? '2640' : '',
+        },
       },
       message: '', // eslint-disable-line react/no-unused-state
       loading: false, // eslint-disable-line react/no-unused-state
@@ -58,8 +73,10 @@ export class Register extends Component {
     this.formRef = React.createRef();
   }
 
-  renderExtra() {
-    return null;
+  submitForm(values) {
+    console.log('Will submit form');
+    console.log(values);
+    // this.rootStore.routing.push('/auth/register/setup');
   }
 
   render() {
@@ -67,12 +84,12 @@ export class Register extends Component {
       <>
         <h1>Registration</h1>
         <FormikWizard
+          hidden={this.state.isSubmitted}
           initialValues={this.state.initialValues}
           validateOnNext
           activeStepIndex={0}
           onSubmit={(values) => {
-            console.log('Here is values');
-            console.log(values);
+            this.submitForm(values);
           }}
           steps={[
             {
@@ -84,6 +101,70 @@ export class Register extends Component {
             },
             {
               component: ContactDetails,
+              validationSchema: Yup.object().shape({
+                account: Yup.object().shape({
+                  firstName: Yup.string().required('First Name is required'),
+                  lastName: Yup.string().required('Last Name is required'),
+                  email: Yup.string()
+                    .email()
+                    .required('Valid email address required'),
+                  emailConfirmation: Yup.string()
+                    .email()
+                    .required('Email confirmation required')
+                    .oneOf([Yup.ref('email'), null], 'Emails must match'),
+                }),
+                address: Yup.object().shape({
+                  addressline1: Yup.string().required('Address is required'),
+                  city: Yup.string().required('City is required'),
+                  state: Yup.string().required('State is required'),
+                  postalCode: Yup.string().required('Post Code is required'),
+                  country: Yup.string().required('Country is required'),
+                }),
+              }),
+            },
+            {
+              component: VerificationDetails,
+              validationSchema: Yup.object().shape({
+                account: Yup.object().shape({
+                  password: Yup.string()
+                    .required('Password is required')
+                    .min(6, 'Password must contain 6 or more characters')
+                    .matches(
+                      /^(?=.*[a-z])/,
+                      'Password must contain at least one lowercase letter'
+                    )
+                    .matches(
+                      /^(?=.*[A-Z])/,
+                      'Password must contain at least one uppercase letter'
+                    )
+                    .matches(
+                      /^(?=.*[0-9])/,
+                      'Password must contain at least one number'
+                    )
+                    .matches(
+                      /^(?=.*[!@#$%^&*])/,
+                      'Password must contain at least one special character'
+                    ),
+                  passwordConfirmation: Yup.string()
+                    .required('Confirmation is required')
+                    .oneOf([Yup.ref('password'), null], 'Passwords must match'),
+                  otpCode: Yup.string()
+                    .required('Code is required')
+                    .min(6, 'Code is six numbers')
+                    .test('verify', 'Code incorrect', function (code) {
+                      if (globalOtpStore.verified) {
+                        return true;
+                      }
+                      if (code.length === 6 && globalOtpStore.sent) {
+                        return globalOtpStore.verify({
+                          mobile: this.parent.mobile,
+                          code,
+                        });
+                      }
+                      return true;
+                    }),
+                }),
+              }),
             },
           ]}
         >
@@ -94,16 +175,17 @@ export class Register extends Component {
             handleNext,
             isNextDisabled,
             isPrevDisabled,
+            isSubmitting,
           }) => {
             return (
               <Space direction="vertical" size="middle">
                 <Steps
                   current={currentStepIndex}
-                  percent={StepDivision * currentStepIndex}
+                  percent={StepDivision * (currentStepIndex + 1)}
                 >
                   <Step title="Country" />
                   <Step title="Contact Details" />
-                  <Step title="Billing Details" />
+                  <Step title="Verification" />
                 </Steps>
                 {renderComponent()}
                 <Row justify="space-between">
@@ -115,7 +197,7 @@ export class Register extends Component {
                     Previous
                   </Button>
                   <Button
-                    disabled={isNextDisabled}
+                    disabled={isNextDisabled || isSubmitting}
                     type="primary"
                     onClick={handleNext}
                   >
@@ -126,7 +208,6 @@ export class Register extends Component {
             );
           }}
         </FormikWizard>
-        {this.renderExtra()}
       </>
     );
   }

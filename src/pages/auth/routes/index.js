@@ -17,6 +17,7 @@ import AuthLayout from 'layouts/Auth';
 import ChangePassword from '../containers/ChangePassword';
 import Login from '../containers/Login';
 import Register from '../containers/Register';
+import RegisterSetup from '../containers/RegisterSetup';
 
 const PATH = '/auth';
 export default [
@@ -31,6 +32,11 @@ export default [
         exact: true,
       },
       { path: `${PATH}/register`, component: Register, exact: true },
+      {
+        path: `${PATH}/register/setup`,
+        component: RegisterSetup,
+        exact: true,
+      },
     ],
   },
 ];

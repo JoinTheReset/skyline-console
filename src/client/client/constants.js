@@ -43,6 +43,7 @@ export const endpointsDefault = {
   ironic: '/api/openstack/ironic',
   ironicInspector: '/api/openstack/ironic-inspector',
   octavia: '/api/openstack/octavia',
+  billingWebsocket: '/api/billing/wc',
 };
 
 export const getOpenstackEndpoint = (key) => {
@@ -88,6 +89,8 @@ export const swiftEndpoint = () => getOriginEndpoint('swift');
 export const cinderEndpoint = () => getOriginEndpoint('cinder');
 export const manilaEndpoint = () => getOriginEndpoint('manilav2');
 export const zunEndpoint = () => getOriginEndpoint('zun');
+export const billingBase = () => '/api/billing/v1';
+export const billingEndpoint = () => '/api/billing/v1';
 
 export const apiVersionMaps = {
   nova: {

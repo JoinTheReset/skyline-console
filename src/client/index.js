@@ -12,24 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import skyline from './skyline';
-import nova from './nova';
+import barbican from './barbican';
+import billing from './billing';
 import cinder from './cinder';
+import designate from './designate';
 import glance from './glance';
-import neutron from './neutron';
-import keystone from './keystone';
 import heat from './heat';
+import ironic from './ironic';
+import keystone from './keystone';
+import magnum from './magnum';
+import manila from './manila';
+import masakari from './masakari';
+import neutron from './neutron';
+import nova from './nova';
 import octavia from './octavia';
 import placement from './placement';
-import ironic from './ironic';
+import skyline from './skyline';
 import swift from './swift';
 import trove from './trove';
-import manila from './manila';
-import barbican from './barbican';
 import zun from './zun';
-import magnum from './magnum';
-import masakari from './masakari';
-import designate from './designate';
 
 const client = {
   skyline,
@@ -50,6 +51,7 @@ const client = {
   magnum,
   masakari,
   designate,
+  billing,
 };
 
 window.client = client;

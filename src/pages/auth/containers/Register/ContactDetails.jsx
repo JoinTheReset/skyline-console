@@ -1,14 +1,15 @@
 import React from 'react';
-import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { Form, Input, Row, Col, List, Divider } from 'antd';
 import useGoogle from 'react-google-autocomplete/lib/usePlacesAutocompleteService';
+import { getIn } from 'formik';
 import { GoogleAddressParser } from './AddressParser';
 
 const GOOGLE_MAPS_API_KEY = 'AIzaSyDil4cEpmsoIKZhvZpY87oYigk24xj4UJ8';
 
-const ContactDetails = ({ errors, values, handleChange }) => {
+const ContactDetails = ({ errors, values, handleChange, setFieldValue }) => {
   const [displaySettings, setDisplaySettings] = React.useState({
     typed_address: '',
+    computed_address: '',
     should_hide_address_results: false,
   });
   const {
@@ -26,13 +27,26 @@ const ContactDetails = ({ errors, values, handleChange }) => {
   });
   const setPlaceDetails = (place_name, place_id) => {
     placesService?.getDetails({ placeId: place_id }, (place) => {
-      values.typed_address = place_name;
-      values.address_components = place.address_components;
-      console.log(values);
-      const address = new GoogleAddressParser(values.address_components);
-      console.log(address.result());
+      const address = new GoogleAddressParser(place.address_components);
       values.address = address.result();
-      setDisplaySettings({ address_components: address.result() });
+      console.log(values.address);
+      let computed_address = '';
+      if (values.address.premise) {
+        computed_address = `${values.address.premise}/${values.address.street_number} ${values.address.street_name}`;
+      } else {
+        computed_address = `${values.address.street_number} ${values.address.street_name}`;
+      }
+      values.address.addressline1 = computed_address;
+      setDisplaySettings({
+        address_components: address.result(),
+        computed_address,
+      });
+      // We must set the formik field values to carry over the requirements here
+      setFieldValue('address.addressline1', computed_address);
+      setFieldValue('address.state', values.address.state);
+      setFieldValue('address.city', values.address.city);
+      setFieldValue('address.country', values.address.country);
+      setFieldValue('address.postalCode', values.address.postal_code);
     });
   };
 
@@ -41,33 +55,35 @@ const ContactDetails = ({ errors, values, handleChange }) => {
       <Row gutter={24}>
         <Col span={12}>
           <Form.Item
-            label="Email"
+            label="First Name"
             required
             hasFeedback
-            validateStatus={errors.email ? 'error' : ''}
-            help={errors.email}
+            validateStatus={getIn(errors, 'account.firstName') ? 'error' : ''}
+            help={getIn(errors, 'account.firstName')}
           >
             <Input
-              name="email"
-              placeholder="Email"
+              name="account.firstName"
+              placeholder="John"
+              autoComplete="firstName"
               onChange={handleChange}
-              value={values.email}
+              value={values.account.firstName}
             />
           </Form.Item>
         </Col>
         <Col span={12}>
           <Form.Item
-            label="Phone"
+            label="Last Name"
             required
             hasFeedback
-            validateStatus={errors.phone ? 'error' : ''}
-            help={errors.phone}
+            validateStatus={getIn(errors, 'account.lastName') ? 'error' : ''}
+            help={getIn(errors, 'account.lastName')}
           >
             <Input
-              name="phone"
-              placeholder="Phone"
+              name="account.lastName"
+              placeholder="Smith"
+              autoComplete="lastName"
               onChange={handleChange}
-              value={values.phone}
+              value={values.account.lastName}
             />
           </Form.Item>
         </Col>
@@ -75,44 +91,41 @@ const ContactDetails = ({ errors, values, handleChange }) => {
       <Row gutter={24}>
         <Col span={12}>
           <Form.Item
-            label="Password"
+            label="Email"
             required
             hasFeedback
-            validateStatus={errors.password ? 'error' : ''}
-            help={errors.password}
+            validateStatus={getIn(errors, 'account.email') ? 'error' : ''}
+            help={getIn(errors, 'account.email')}
           >
-            <Input.Password
-              name="password"
-              placeholder="Account Password"
+            <Input
+              name="account.email"
+              placeholder="Email"
+              autoComplete="email"
               onChange={handleChange}
-              value={values.password}
-              iconRender={(visible) =>
-                visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-              }
+              value={values.account.email}
             />
           </Form.Item>
         </Col>
         <Col span={12}>
           <Form.Item
-            label="Password Confirm"
+            label="Email Confirmation"
             required
             hasFeedback
-            validateStatus={errors.password_confirm ? 'error' : ''}
-            help={errors.password_confirm}
+            validateStatus={
+              getIn(errors, 'account.emailConfirmation') ? 'error' : ''
+            }
+            help={getIn(errors, 'account.emailConfirmation')}
           >
-            <Input.Password
-              name="password_confirm"
-              placeholder="Confirm Password"
+            <Input
+              name="account.emailConfirmation"
+              placeholder="Email Confirmation"
               onChange={handleChange}
-              value={values.password_confirm}
-              iconRender={(visible) =>
-                visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-              }
+              value={values.account.emailConfirmation}
             />
           </Form.Item>
         </Col>
       </Row>
-
+      <Divider gutter={24} />
       <Row gutter={24}>
         <Col span={24}>
           <Input.Search
@@ -142,11 +155,6 @@ const ContactDetails = ({ errors, values, handleChange }) => {
                           item.place_id,
                           values
                         );
-                        values.typed_address = item.description;
-                        setDisplaySettings({
-                          typed_address: item.description,
-                          should_display_address_results: false,
-                        });
                       }}
                     >
                       <List.Item.Meta title={item.description} />
@@ -157,108 +165,109 @@ const ContactDetails = ({ errors, values, handleChange }) => {
           </div>
         </Col>
       </Row>
-      {displaySettings.address_components && (
-        <>
-          <Row gutter={24}>
-            <Divider />
-
-            <Col span={12}>
-              <Form.Item
-                label="Address Line 1"
-                required
-                hasFeedback
-                validateStatus={errors.addressline1 ? 'error' : ''}
-                help={errors.addressline1}
-              >
-                <Input
-                  name="addressline1"
-                  placeholder="123 Wallaby"
-                  onChange={handleChange}
-                  value={`${
-                    values.address.premise
-                      ? `${values.address.premise}/${values.address.street_number}`
-                      : values.address.street_number
-                  } ${values.address.street_name}`}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="Address Line 2"
-                hasFeedback
-                validateStatus={errors.addressline2 ? 'error' : ''}
-                help={errors.addressline2}
-              >
-                <Input name="addressline2" onChange={handleChange} />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={12}>
-            <Col span={12}>
-              <Form.Item
-                label="City"
-                hasFeedback
-                required
-                validateStatus={errors.city ? 'error' : ''}
-                help={errors.city}
-              >
-                <Input
-                  name="city"
-                  value={values.address.city}
-                  onChange={handleChange}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="State"
-                hasFeedback
-                required
-                validateStatus={errors.state ? 'error' : ''}
-                help={errors.state}
-              >
-                <Input
-                  name="state"
-                  value={values.address.state}
-                  onChange={handleChange}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={12}>
-            <Col span={12}>
-              <Form.Item
-                label="Country"
-                hasFeedback
-                required
-                validateStatus={errors.country ? 'error' : ''}
-                help={errors.country}
-              >
-                <Input
-                  name="country"
-                  value={values.address.country}
-                  onChange={handleChange}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="Postal Code"
-                hasFeedback
-                required
-                validateStatus={errors.postal_code ? 'error' : ''}
-                help={errors.postal_code}
-              >
-                <Input
-                  name="postal_code"
-                  value={values.address.postal_code}
-                  onChange={handleChange}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-        </>
-      )}
+      <Divider />
+      <Row gutter={24}>
+        <Col span={12}>
+          <Form.Item
+            label="Address Line 1"
+            hasFeedback
+            required
+            validateStatus={
+              getIn(errors, 'address.addressline1') ? 'error' : ''
+            }
+            help={getIn(errors, 'address.addressline1')}
+          >
+            <Input
+              name="address.addressline1"
+              placeholder="123 Wallaby"
+              onChange={handleChange}
+              value={values.address.addressline1}
+            />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item
+            label="Address Line 2"
+            hasFeedback
+            validateStatus={
+              getIn(errors, 'address.addressline2') ? 'error' : ''
+            }
+            help={getIn(errors, 'address.addressline2')}
+          >
+            <Input
+              name="address.addressline2"
+              onChange={handleChange}
+              value={values.address.addressline2}
+            />
+          </Form.Item>
+        </Col>
+      </Row>
+      <Row gutter={24}>
+        <Col span={12}>
+          <Form.Item
+            label="City"
+            hasFeedback
+            required
+            validateStatus={getIn(errors, 'address.city') ? 'error' : ''}
+            help={getIn(errors, 'address.city')}
+          >
+            <Input
+              name="address.city"
+              placeholder="Sydney"
+              onChange={handleChange}
+              value={values.address.city}
+            />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item
+            label="State"
+            hasFeedback
+            validateStatus={getIn(errors, 'address.state') ? 'error' : ''}
+            help={getIn(errors, 'address.state')}
+          >
+            <Input
+              name="address.state"
+              placeholder="New South Wales"
+              onChange={handleChange}
+              value={values.address.state}
+            />
+          </Form.Item>
+        </Col>
+      </Row>
+      <Row gutter={24}>
+        <Col span={12}>
+          <Form.Item
+            label="Country"
+            hasFeedback
+            required
+            validateStatus={getIn(errors, 'address.country') ? 'error' : ''}
+            help={getIn(errors, 'address.country')}
+          >
+            <Input
+              name="address.country"
+              placeholder="Australia"
+              onChange={handleChange}
+              value={values.address.country}
+            />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item
+            label="Postal Code"
+            hasFeedback
+            validateStatus={getIn(errors, 'address.postalCode') ? 'error' : ''}
+            help={getIn(errors, 'address.postalCode')}
+          >
+            <Input
+              name="address.postalCode"
+              placeholder="2000"
+              onChange={handleChange}
+              value={values.address.postalCode}
+            />
+          </Form.Item>
+        </Col>
+      </Row>
     </Form>
   );
 };

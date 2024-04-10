@@ -1,47 +1,59 @@
 import React from 'react';
-import { Form, Row, Col } from 'antd';
-import { CountryDropdown, RegionDropdown } from 'react-country-region-selector';
+import { Form, Input, Row, Col } from 'antd';
+import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 
-const CountryDetails = ({ errors, values, handleChange, handleBlur }) => (
+const BillingDetails = ({ errors, values, handleChange }) => (
   <Form layout="vertical">
     <Row gutter={24}>
       <Col span={24}>
         <Form.Item
-          label="Country"
+          label="Company Name"
           required
           hasFeedback
-          validateStatus={errors.email ? 'error' : ''}
-          help={errors.country}
-        >
-          <CountryDropdown
-            name="country"
-            priorityOptions={['AU', 'CA', 'US', 'GB']}
-            valueType="short"
-            value={values.country}
-            onChange={(_, e) => handleChange(e)}
-            onBlur={handleBlur}
-            style={{
-              fontSize: 14,
-            }}
-          />
-        </Form.Item>
+          validateStatus={errors.company_name ? 'error' : ''}
+          help={errors.company_name}
+        />
       </Col>
     </Row>
 
     <Row gutter={24}>
-      <Col span={24}>
-        <Form.Item label="State or Territory">
-          <RegionDropdown
-            name="state"
-            countryValueType="short"
-            disableWhenEmpty
-            country={values.country}
-            value={values.state}
-            onChange={(_, e) => handleChange(e)}
-            onBlur={handleBlur}
-            style={{
-              fontSize: 14,
-            }}
+      <Col span={12}>
+        <Form.Item
+          label="Password"
+          required
+          hasFeedback
+          validateStatus={errors.password ? 'error' : ''}
+          help={errors.password}
+        >
+          <Input.Password
+            name="password"
+            placeholder="Account Password"
+            autoComplete="new-password"
+            onChange={handleChange}
+            value={values.password}
+            iconRender={(visible) =>
+              visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+            }
+          />
+        </Form.Item>
+      </Col>
+      <Col span={12}>
+        <Form.Item
+          label="Password Confirm"
+          required
+          hasFeedback
+          validateStatus={errors.passwordConfirmation ? 'error' : ''}
+          help={errors.passwordConfirmation}
+        >
+          <Input.Password
+            name="passwordConfirmation"
+            placeholder="Confirm Password"
+            autoComplete="new-password"
+            onChange={handleChange}
+            value={values.passwordConfirmation}
+            iconRender={(visible) =>
+              visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+            }
           />
         </Form.Item>
       </Col>
@@ -49,4 +61,4 @@ const CountryDetails = ({ errors, values, handleChange, handleBlur }) => (
   </Form>
 );
 
-export default CountryDetails;
+export default BillingDetails;
