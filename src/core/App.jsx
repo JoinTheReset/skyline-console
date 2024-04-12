@@ -17,6 +17,7 @@ import PropTypes from 'prop-types';
 import { Router } from 'react-router';
 import renderRoutes from 'utils/RouterConfig';
 import { Provider } from 'mobx-react';
+import { WebSocketProvider } from 'components/WebsocketContext';
 // eslint-disable-next-line import/no-unresolved
 import 'styles/main.less';
 
@@ -51,7 +52,9 @@ class App extends Component {
     return (
       initDone && (
         <Provider rootStore={rootStore}>
-          <Router history={history}>{renderRoutes(routes)}</Router>
+          <WebSocketProvider>
+            <Router history={history}>{renderRoutes(routes)}</Router>
+          </WebSocketProvider>
         </Provider>
       )
     );

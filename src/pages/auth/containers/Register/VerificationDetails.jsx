@@ -36,6 +36,10 @@ const VerificationDetails = ({
 
         let countDown = 60;
         const timer = setInterval(() => {
+          if (globalOtpStore.verified) {
+            clearInterval(timer);
+            return;
+          }
           if (countDown < 1) {
             clearInterval(timer);
             setOtpButtonDisabled(otpButtonDisable);

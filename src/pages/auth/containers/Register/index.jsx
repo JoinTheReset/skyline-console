@@ -17,15 +17,24 @@ import { inject, observer } from 'mobx-react';
 import { FormikWizard } from 'formik-wizard-form';
 import globalSkylineStore from 'stores/skyline/skyline';
 import globalOtpStore from 'stores/billing/otp';
+import globalAccountStore from 'stores/billing/account';
 import { Row, Steps, Space, Button } from 'antd';
 import * as Yup from 'yup';
 
+import { WebSocketContext } from 'components/WebsocketContext';
 import CountryDetails from './CountryDetails';
 import ContactDetails from './ContactDetails';
 import VerificationDetails from './VerificationDetails';
 
 const { Step } = Steps;
 const StepDivision = 33.33;
+
+function includeWebsocketIdHook(RealComponent) {
+  return function WrappedComponent(props) {
+    const { websocketId } = React.useContext(WebSocketContext);
+    return <RealComponent {...props} websocketId={websocketId} />;
+  };
+}
 
 export class Register extends Component {
   constructor(props) {
@@ -75,8 +84,20 @@ export class Register extends Component {
 
   submitForm(values) {
     console.log('Will submit form');
-    console.log(values);
-    // this.rootStore.routing.push('/auth/register/setup');
+    const sendingData = {
+      ...values,
+      websocketId: this.props.websocketId.current,
+    };
+    console.log(sendingData);
+
+    globalAccountStore
+      .create(sendingData)
+      .then(() => {
+        this.rootStore.routing.push('/auth/register/setup');
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
 
   render() {
@@ -213,4 +234,4 @@ export class Register extends Component {
   }
 }
 
-export default inject('rootStore')(observer(Register));
+export default inject('rootStore')(includeWebsocketIdHook(observer(Register)));

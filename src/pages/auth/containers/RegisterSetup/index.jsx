@@ -15,8 +15,22 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import globalSkylineStore from 'stores/skyline/skyline';
-// import { Row, Steps, Space, Button } from 'antd';
+import { Row, Col, Space, Progress, Divider } from 'antd';
 
+import { WebSocketContext } from 'components/WebsocketContext';
+
+function includeWebsocketIdHook(RealComponent) {
+  return function WrappedComponent(props) {
+    const { websocketId, lastJsonMessage } = React.useContext(WebSocketContext);
+    return (
+      <RealComponent
+        {...props}
+        websocketId={websocketId}
+        lastJsonMessage={lastJsonMessage}
+      />
+    );
+  };
+}
 export class RegisterSetup extends Component {
   constructor(props) {
     super(props);
@@ -25,7 +39,32 @@ export class RegisterSetup extends Component {
       error: false, // eslint-disable-line react/no-unused-state
       message: '', // eslint-disable-line react/no-unused-state
       loading: false, // eslint-disable-line react/no-unused-state
+      progress: {
+        total: 6,
+        current: 0,
+        message: 'Starting setup process...',
+      },
     };
+  }
+
+  componentDidUpdate() {
+    console.log(this.props.lastJsonMessage);
+    if (this.props.lastJsonMessage.type === 'progress_report') {
+      if (this.state.progress !== this.props.lastJsonMessage) {
+        this.setState({ progress: this.props.lastJsonMessage }); // eslint-disable-line react/no-did-update-set-state
+      }
+    } else if (this.props.lastJsonMessage.type === 'redirect_to') {
+      this.rootStore.routing.push(this.props.lastJsonMessage.path);
+    }
+  }
+
+  get currentPercentage() {
+    console.log(
+      (this.state.progress.current / this.state.progress.total) * 100
+    );
+    return Math.trunc(
+      (this.state.progress.current / this.state.progress.total) * 100
+    );
   }
 
   get rootStore() {
@@ -44,10 +83,34 @@ export class RegisterSetup extends Component {
   render() {
     return (
       <>
-        <h1>Setting up Account</h1>
+        <Space
+          align="center"
+          direction="vertical"
+          size="middle"
+          style={{ display: 'flex' }}
+        >
+          <Row gutter={24} justify="center" align="top">
+            <Col span={24}>
+              <h1>Setting up Account</h1>
+            </Col>
+          </Row>
+          <Divider />
+          <Row gutter={24} justify="center" align="top">
+            <Col span={24}>
+              <Progress type="circle" percent={this.currentPercentage} />
+            </Col>
+          </Row>
+          <Row gutter={24} justify="center" align="top">
+            <Col span={24}>
+              <h3>{this.state.progress.message}</h3>
+            </Col>
+          </Row>
+        </Space>
       </>
     );
   }
 }
 
-export default inject('rootStore')(observer(RegisterSetup));
+export default inject('rootStore')(
+  includeWebsocketIdHook(observer(RegisterSetup))
+);
