@@ -48,25 +48,19 @@ export class RegisterSetup extends Component {
   }
 
   componentDidUpdate() {
-    console.log(this.props.lastJsonMessage);
-    console.log(this.rootStore.temp_new_user);
     if (this.props.lastJsonMessage.type === 'progress_report') {
       if (this.state.progress !== this.props.lastJsonMessage) {
         this.setState({ progress: this.props.lastJsonMessage }); // eslint-disable-line react/no-did-update-set-state
       }
     } else if (this.props.lastJsonMessage.type === 'redirect_to') {
-      console.log('Will redirect');
-
       const body = {
         domain: this.rootStore.temp_new_user.domain_id,
         password: this.rootStore.temp_new_user.account.password,
         region: this.rootStore.temp_new_user.default_region,
         username: this.rootStore.temp_new_user.account.email,
       };
-      console.log(body);
       this.rootStore.login(body).then(
         () => {
-          console.log('We have logged in...');
           this.rootStore.routing.push(this.props.lastJsonMessage.path);
         },
         (error) => {
@@ -77,7 +71,6 @@ export class RegisterSetup extends Component {
   }
 
   get currentPercentage() {
-    console.log((this.state.progress.step / this.state.progress.total) * 100);
     return Math.trunc(
       (this.state.progress.step / this.state.progress.total) * 100
     );

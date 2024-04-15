@@ -83,12 +83,10 @@ export class Register extends Component {
   }
 
   submitForm(values) {
-    console.log('Will submit form');
     const sendingData = {
       ...values,
       websocketId: this.props.websocketId.current,
     };
-    console.log(sendingData);
     globalAccountStore
       .create(sendingData)
       .then((resp) => {
