@@ -89,10 +89,14 @@ export class Register extends Component {
       websocketId: this.props.websocketId.current,
     };
     console.log(sendingData);
-
     globalAccountStore
       .create(sendingData)
-      .then(() => {
+      .then((resp) => {
+        this.rootStore.updateTempUser({
+          ...values,
+          domain_id: resp.domainId,
+          default_region: resp.defaultRegion,
+        });
         this.rootStore.routing.push('/auth/register/setup');
       })
       .catch((error) => {

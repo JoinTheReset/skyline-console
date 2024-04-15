@@ -12,67 +12,52 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { action, observable, extendObservable } from 'mobx';
+import client from 'client';
+import { isEmpty, values } from 'lodash';
+import { action, extendObservable, observable } from 'mobx';
 import { RouterStore } from 'mobx-react-router';
 import { parse } from 'qs';
-import client from 'client';
 import { getQueryString } from 'utils/index';
-import { setLocalStorageItem, clearLocalStorage } from 'utils/local-storage';
-import { isEmpty, values } from 'lodash';
+import { clearLocalStorage, setLocalStorageItem } from 'utils/local-storage';
 
 export class RootStore {
-  @observable
-  user = null;
+  @observable temp_new_user = null;
 
-  @observable
-  projectId = null;
+  @observable user = null;
 
-  @observable
-  projectName = null;
+  @observable projectId = null;
 
-  @observable
-  roles = [];
+  @observable projectName = null;
 
-  @observable
-  baseDomains = [];
+  @observable roles = [];
 
-  @observable
-  policies = [];
+  @observable baseDomains = [];
 
-  @observable
-  hasAdminRole = false;
+  @observable policies = [];
 
-  @observable
-  hasAdminPageRole = false;
+  @observable hasAdminRole = false;
 
-  @observable
-  hasAdminOnlyRole = false;
+  @observable hasAdminPageRole = false;
 
-  @observable
-  openKeys = [];
+  @observable hasAdminOnlyRole = false;
 
-  @observable
-  endpoints = {};
+  @observable openKeys = [];
 
-  @observable
-  oldPassword = {};
+  @observable endpoints = {};
 
-  @observable
-  info = {};
+  @observable oldPassword = {};
 
-  @observable
-  version = '';
+  @observable info = {};
 
-  @observable
-  noticeCount = 0;
+  @observable version = '';
+
+  @observable noticeCount = 0;
 
   noticeCountWaitRemove = 0;
 
-  @observable
-  enableBilling = false;
+  @observable enableBilling = false;
 
-  @observable
-  neutronExtensions = [];
+  @observable neutronExtensions = [];
 
   // @observable
   // menu = renderMenu(i18n.t);
@@ -132,6 +117,11 @@ export class RootStore {
     this.hasAdminPageRole = await this.getUserSystemRoles(userInfo);
     this.hasAdminRole = this.hasAdminPageRole;
     this.hasAdminOnlyRole = roles.some((it) => it.name === 'admin');
+  }
+
+  @action
+  updateTempUser(temp_user_details) {
+    this.temp_new_user = temp_user_details;
   }
 
   @action
@@ -242,7 +232,8 @@ export class RootStore {
   @action
   removeNoticeCount() {
     const elements = document.getElementsByClassName('ant-modal');
-    // if there is an modal in the page, the notice count will be changed later, after no modal.
+    // if there is an modal in the page, the notice count will be changed later,
+    // after no modal.
     if (elements.length > 0) {
       this.noticeCountWaitRemove += 1;
     } else {

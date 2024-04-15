@@ -1,22 +1,26 @@
 import React, { useEffect, createContext, useRef } from 'react';
 import useWebSocket from 'react-use-websocket';
+import { v4 as uuidv4 } from 'uuid';
 import { WEBSOCKET_URL } from './constants';
 
 const WebSocketContext = createContext();
 
 function WebSocketProvider({ children }) {
-  const websocketId = useRef(0);
+  const websocketId = useRef(uuidv4());
 
-  const { lastJsonMessage } = useWebSocket(WEBSOCKET_URL, {
-    shouldReconnect: () => true,
-    reconnectAttempts: 3,
-    heartbeat: {
-      message: 'ping',
-      returnMessage: 'pong',
-      timeout: 10000,
-      interval: 20000,
-    },
-  });
+  const { lastJsonMessage } = useWebSocket(
+    `${WEBSOCKET_URL}/${websocketId.current}`,
+    {
+      shouldReconnect: () => true,
+      reconnectAttempts: 3,
+      heartbeat: {
+        message: 'ping',
+        returnMessage: 'pong',
+        timeout: 10000,
+        interval: 20000,
+      },
+    }
+  );
   useEffect(() => {
     if (lastJsonMessage !== null) {
       if (lastJsonMessage.type === 'identification') {
