@@ -1,4 +1,6 @@
 ---
+permissions:
+  contents: write
 name: build console
 on:
   push:
@@ -35,4 +37,8 @@ jobs:
         run: yarn build
       - name: inspect
         run: ls -lah skyline_console/static
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: skyline_console/static
 ...
