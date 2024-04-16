@@ -34,5 +34,5 @@ jobs:
       - name: Build dist
         run: yarn build
       - name: inspect
-        run: ls -lah dist
+        run: ls -lah 
 ...
