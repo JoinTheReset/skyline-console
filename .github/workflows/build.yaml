@@ -20,7 +20,7 @@ jobs:
       - name: Run ESLint
         run: yarn run lint
   build-dist:
-    depends_on: eslint-check
+    needs: eslint-check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
