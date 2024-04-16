@@ -19,4 +19,18 @@ jobs:
         run: yarn install
       - name: Run ESLint
         run: yarn run lint
+  build-dist:
+    depends_on: eslint-check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '12'
+          cache: 'yarn'
+      - name: Install modules
+        run: yarn install
+      - name: Build dist
+        run: yarn build
 ...
