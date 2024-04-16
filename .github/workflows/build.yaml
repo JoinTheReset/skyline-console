@@ -1,0 +1,16 @@
+---
+name: build console
+on:
+  push:
+    branches:
+      - 'develop'
+
+jobs:
+  eslint-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install modules
+        run: yarn install
+
+...
