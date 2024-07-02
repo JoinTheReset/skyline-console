@@ -1,7 +1,7 @@
 ---
 permissions:
   contents: write
-name: build console
+name: Build
 on:
   push:
     branches:
@@ -41,4 +41,20 @@ jobs:
         with:
           name: distro
           path: skyline_console/static
+  nginx-build:
+    needs: build-dist
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: distro
+      - name: Create Dockerfile
+        run: |
+          cat << 'EOF' > Dockerfile
+          FROM nginx:alpine
+          COPY distro /usr/share/nginx/html
+          EOF
+
+
+
 ...
