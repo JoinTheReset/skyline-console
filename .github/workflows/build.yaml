@@ -35,26 +35,16 @@ jobs:
         run: yarn install
       - name: Build dist
         run: yarn build
-      - name: inspect
-        run: ls -lah skyline_console/static
-      - uses: actions/upload-artifact@v4
-        with:
-          name: distro
-          path: skyline_console/static
-  nginx-build:
-    needs: build-dist
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: distro
       - name: Create Dockerfile
         run: |
           cat << 'EOF' > Dockerfile
           FROM nginx:alpine
           COPY distro /usr/share/nginx/html
           EOF
-
-
-
+      - uses: actions/upload-artifact@v4
+        with:
+          name: distro
+          path: |
+            skyline_console/static
+            Dockerfile
 ...
