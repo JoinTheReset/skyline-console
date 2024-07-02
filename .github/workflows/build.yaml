@@ -41,10 +41,11 @@ jobs:
           FROM nginx:alpine
           COPY skyline_console/static /usr/share/nginx/html
           EOF
-      - uses: actions/upload-artifact@v4
+      - name: Release Dev
+        uses: softprops/action-gh-release@v2
         with:
-          name: distro
-          path: |
-            skyline_console/static
+          prerelease: true
+          files: |
             Dockerfile
+            skyline_console/static
 ...
