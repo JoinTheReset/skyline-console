@@ -50,7 +50,7 @@ jobs:
     environment: staging
     runs-on: ubuntu-latest
     env:
-      TF_WORKSPACE: staging
+      TF_WORKSPACE: customer-dashboard-staging
       TF_VAR_k8s_cluster_endpoint: ${{ secrets.MASTER_ZONE_K8S_CLUSTER_ENDPOINT }}
       TF_VAR_k8s_cluster_certificate: ${{ secrets.MASTER_ZONE_K8S_CLUSTER_CERTIFICATE }}
       TF_VAR_k8s_client_key: ${{ secrets.MASTER_ZONE_K8S_CLIENT_KEY }}

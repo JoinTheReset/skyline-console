@@ -1,9 +1,9 @@
 variable "environment" {
   type = map(any)
   default = {
-    develop = "dev"
-    staging = "staging"
-    master  = "prod"
+    customer-dashboard-develop = "dev"
+    customer-dashboard-staging = "staging"
+    customer-dashboard-master  = "prod"
   }
 }
 variable "k8s_cluster_endpoint" {
@@ -44,16 +44,12 @@ variable "ingress_domain" {
   type = string
 }
 
-variable "app_name" {
-  type = string
-}
-
 variable "replicas" {
   type = map(any)
   default = {
-    develop = 2
-    staging = 3
-    master  = 3
+    customer-dashboard-develop = 2
+    customer-dashboard-staging = 3
+    customer-dashboard-master  = 3
   }
 }
 

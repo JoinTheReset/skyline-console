@@ -2,10 +2,6 @@ terraform {
   required_version = ">=1.4.2"
   cloud {
     organization = "ResetData"
-
-    workspaces {
-      tags = ["frontend", "api"]
-    }
   }
   required_providers {
     kubernetes = {
