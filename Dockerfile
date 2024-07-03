@@ -8,6 +8,7 @@ server {
   location / {
       root   /usr/share/nginx/html;
       try_files \$uri /index.html;
+  }
 }
 EOF
 COPY skyline_console/static /usr/share/nginx/html
