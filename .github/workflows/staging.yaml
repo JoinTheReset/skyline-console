@@ -36,7 +36,7 @@ jobs:
         name: Push docker image to Harbor
         uses: docker/build-push-action@v6
         with:
-          context: "${{ env.ARTIFACT_FOLDER }}"
+          context: .
           push: true
           tags: harbor.core.resetdata.com/dashboard/frontend:${{ github.sha }}
 
