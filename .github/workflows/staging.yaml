@@ -28,6 +28,7 @@ jobs:
         with:
           username: ${{ secrets.HARBOR_ROBOT_USER }}
           password: ${{ secrets.HARBOR_ROBOT_PASS }}
+          registry: harbor.core.resetdata.com
       - 
         name: Push docker image to Harbor
         uses: docker/build-push-action@v6
