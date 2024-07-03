@@ -6,10 +6,10 @@ on:
     types: [completed]
     branches: [develop]
 env:
-  REGISTRY_SERVER: harbor.core.resetdata.com
   ARTIFACT_FOLDER: static-release
-  IMAGE_URI: harbor.core.resetdata.com/dashboard/frontend
-  INGRESS_URL: dashboard.staging.core.resetdata.com
+  TF_VAR_ingress_domain: dashboard.staging.core.resetdata.com
+  TF_VAR_docker_image_uri: harbor.core.resetdata.com/dashboard/frontend
+  TF_VAR_docker_registry_server: harbor.core.resetdata.com
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -34,14 +34,14 @@ jobs:
         with:
           username: ${{ secrets.HARBOR_ROBOT_USER }}
           password: ${{ secrets.HARBOR_ROBOT_PASS }}
-          registry: ${{ env.REGISTRY_SERVER }}
+          registry: ${{ env.TF_VAR_docker_registry_server }}
       - 
         name: Push docker image to Harbor
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
-          tags: ${{ env.IMAGE_URI }}:${{ github.sha }}
+          tags: ${{ env.TF_VAR_docker_image_uri }}:${{ github.sha }}
 ###
 # Terraform Deploy
 ###
@@ -56,11 +56,8 @@ jobs:
       TF_VAR_k8s_client_key: ${{ secrets.MASTER_ZONE_K8S_CLIENT_KEY }}
       TF_VAR_k8s_cluster_ca_certificate: ${{ secrets.MASTER_ZONE_K8S_CLUSTER_CA_CERTIFICATE }}
       TF_VAR_git_sha: ${{ github.sha }}
-      TF_VAR_docker_image_uri: ${{ env.IMAGE_URI }}
-      TF_VAR_docker_registry_server: ${{ env.REGISTRY_SERVER }}
       TF_VAR_docker_registry_username: ${{ secrets.HARBOR_ROBOT_USER }}
       TF_VAR_docker_registry_password: ${{ secrets.HARBOR_ROBOT_PASS }}
-      TF_VAR_ingress_domain: ${{ env.INGRESS_URL }}
     steps:
       - uses: actions/checkout@v4
       - uses: hashicorp/setup-terraform@v3
