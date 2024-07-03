@@ -43,7 +43,7 @@ jobs:
           EOF
       - uses: actions/upload-artifact@v4
         with:
-          name: distro
+          name: static-release
           path: |
             skyline_console/static
             Dockerfile
