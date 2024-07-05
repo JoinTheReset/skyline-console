@@ -1,7 +1,7 @@
 resource "kubernetes_secret" "harbor" {
   metadata {
-    name      = "harbor"
-    namespace = kubernetes_namespace.this.metadata.0.name
+    name      = "dashboard-frontend-harbor"
+    namespace = data.kubernetes_namespace.this.metadata.0.name
   }
 
   data = {

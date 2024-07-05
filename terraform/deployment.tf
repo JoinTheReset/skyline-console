@@ -1,7 +1,7 @@
 resource "kubernetes_deployment" "this" {
   metadata {
-    name      = "dashboard"
-    namespace = kubernetes_namespace.this.metadata.0.name
+    name      = "dashboard-frontend"
+    namespace = data.kubernetes_namespace.this.metadata.0.name
     labels = {
       application = "dashboard"
       component   = "frontend"

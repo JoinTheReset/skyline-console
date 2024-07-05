@@ -40,10 +40,6 @@ variable "git_sha" {
   type = string
 }
 
-variable "ingress_domain" {
-  type = string
-}
-
 variable "replicas" {
   type = map(any)
   default = {
@@ -51,9 +47,4 @@ variable "replicas" {
     customer-dashboard-staging = 3
     customer-dashboard-master  = 3
   }
-}
-
-variable "app_name" {
-  type    = string
-  default = "dashboard"
 }
