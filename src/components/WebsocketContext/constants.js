@@ -1,1 +1,2 @@
-export const WEBSOCKET_URL = 'ws://bastion.ka.rl.ag:8888/api/billing/wss';
+const { websocketEndpoint } = GLOBAL_VARIABLES;
+export const WEBSOCKET_URL = websocketEndpoint;
