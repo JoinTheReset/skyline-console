@@ -33,6 +33,22 @@ jobs:
           cache: 'yarn'
       - name: Install modules
         run: yarn install
+      - name: Install build config
+        run: |
+          cat << EOF > config/local_config.yaml
+            host: 0.0.0.0
+            port: 8088
+            server: http://localhost:8888
+
+            theme: custom
+
+            globalVariables:
+              websocketEndpoint: wss://api.dev.core.resetdata.com/api/billing/wss
+              defaultLanguage: en
+              supportLanguages: # use value in i18n.js
+                - en
+          EOF
+
       - name: Build dist
         run: yarn build
       - uses: actions/upload-artifact@v4
