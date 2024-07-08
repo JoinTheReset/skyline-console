@@ -43,7 +43,7 @@ jobs:
             theme: custom
 
             globalVariables:
-              websocketEndpoint: wss://dashboard.staging.resetdata.com/api/billing/wss
+              websocketEndpoint: wss://dashboard.staging.core.resetdata.com/api/billing/wss
               defaultLanguage: en
               supportLanguages: # use value in i18n.js
                 - en
