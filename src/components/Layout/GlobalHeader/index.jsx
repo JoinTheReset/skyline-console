@@ -14,8 +14,8 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import cloudLogo from 'asset/image/cloud-logo.svg';
-import cloudLogoWhite from 'asset/image/cloud-logo-white.svg';
+import cloudLogo from 'asset/image/resetdata-logo.svg';
+import cloudLogoWhite from 'asset/image/resetdata-logo.svg';
 import { getPath } from 'utils/route-map';
 import classnames from 'classnames';
 import GlobalNav from '../GlobalNav';
@@ -43,7 +43,7 @@ export default function HeaderContent(props) {
     return (
       <div className={classnames(styles.logo)}>
         <Link to={homeUrl}>
-          <img src={logoSrc} alt="logo" className={styles['logo-image']} />
+          <img src={logoSrc} alt="logo" className={styles['logo-image']} width="95%"/>
         </Link>
       </div>
     );

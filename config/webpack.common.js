@@ -13,124 +13,134 @@
 // limitations under the License.
 
 const webpack = require('webpack');
-const { normalize, resolve } = require('path');
+const {normalize, resolve} = require('path');
 // const path = require("path");
 // const CleanWebpackPlugin = require('clean-webpack-plugin');
 const moment = require('moment');
-const { getGlobalVariables, getCustomStyleVariables } = require('./utils');
+const {getGlobalVariables, getCustomStyleVariables} = require('./utils');
 
 const root = (path) => resolve(__dirname, `../${path}`);
 const version = moment().unix();
 
 module.exports = {
-  module: {
-    rules: [
-      {
-        test: /\.jsx$/,
-        loader: resolve('config/js-string-replace-loader'),
-        include: [root('src/core')],
-        options: {
-          search: 'styles/variables',
-          change: getCustomStyleVariables(),
-        },
-      },
-      {
-        test: /\.jsx?$/,
-        include: [root('src'), root('node_modules')],
-        use: ['thread-loader', 'cache-loader'],
-      },
-      {
-        test: /\.(png|gif|jpg)$/,
-        use: [
-          {
-            loader: 'url-loader',
-            options: {
-              limit: 10240,
-              name: normalize(`asset/image/[name].${version}.[ext]`),
+  module : {
+    rules :
+          [
+            {
+              test : /\.jsx$/,
+              loader : resolve('config/js-string-replace-loader'),
+              include : [ root('src/core') ],
+              options : {
+                search : 'styles/variables',
+                change : getCustomStyleVariables(),
+              },
             },
-          },
-        ],
-        exclude: [
-          root('src/asset/image/logo.png'),
-          root('src/asset/image/loginRightLogo.png'),
-        ],
-      },
-      {
-        test: /\.(png|gif|jpg)$/,
-        use: [
-          {
-            loader: 'url-loader',
-            options: {
-              limit: false,
-              name: normalize('asset/image/[name].[ext]'),
+            {
+              test : /\.jsx?$/,
+              include : [ root('src'), root('node_modules') ],
+              use : [ 'thread-loader', 'cache-loader' ],
             },
-          },
-        ],
-        include: [
-          root('src/asset/image/logo.png'),
-          root('src/asset/image/loginRightLogo.png'),
-        ],
-      },
-      {
-        test: /\.svg$/,
-        use: [
-          {
-            loader: 'url-loader',
-            options: {
-              limit: false,
-              name: normalize('asset/image/[name].[ext]'),
+            {
+              test : /\.(png|gif|jpg)$/,
+              use :
+                  [
+                    {
+                      loader : 'url-loader',
+                      options : {
+                        limit : 10240,
+                        name : normalize(`asset/image/[name].${version}.[ext]`),
+                      },
+                    },
+                  ],
+              exclude :
+                      [
+                        root('src/asset/image/logo.png'),
+                        root('src/asset/image/loginRightLogo.png'),
+                      ],
             },
-          },
-        ],
-        include: [
-          root('src/asset/image/cloud-logo.svg'),
-          root('src/asset/image/cloud-logo-white.svg'),
-        ],
-      },
-      {
-        test: /\.(woff|woff2|ttf|eot|svg)$/,
-        use: [
-          {
-            loader: 'url-loader',
-            options: {
-              limit: 10240,
-              name: normalize(`asset/image/[name].${version}.[ext]`),
+            {
+              test : /\.(png|gif|jpg)$/,
+              use :
+                  [
+                    {
+                      loader : 'url-loader',
+                      options : {
+                        limit : false,
+                        name : normalize('asset/image/[name].[ext]'),
+                      },
+                    },
+                  ],
+              include :
+                      [
+                        root('src/asset/image/logo.png'),
+                        root('src/asset/image/loginRightLogo.png'),
+                      ],
             },
-          },
-        ],
-        exclude: [
-          root('src/asset/image/cloud-logo.svg'),
-          root('src/asset/image/cloud-logo-white.svg'),
-        ],
-      },
-    ],
+            {
+              test : /\.svg$/,
+              use :
+                  [
+                    {
+                      loader : 'url-loader',
+                      options : {
+                        limit : false,
+                        name : normalize('asset/image/[name].[ext]'),
+                      },
+                    },
+                  ],
+              include :
+                      [
+                        root('src/asset/image/resetdata-logo.svg'),
+                        root('src/asset/image/resetdata-logo.svg'),
+                      ],
+            },
+            {
+              test : /\.(woff|woff2|ttf|eot|svg)$/,
+              use :
+                  [
+                    {
+                      loader : 'url-loader',
+                      options : {
+                        limit : 10240,
+                        name : normalize(`asset/image/[name].${version}.[ext]`),
+                      },
+                    },
+                  ],
+              exclude :
+                      [
+                        root('src/asset/image/resetdata-logo.svg'),
+                        root('src/asset/image/resetdata-logo.svg'),
+                      ],
+            },
+          ],
   },
-  resolve: {
-    extensions: ['.js', '.jsx'],
-    modules: [root('src'), root('src/pages'), 'node_modules'],
-    alias: {
-      src: root('src'),
-      asset: root('src/asset'),
-      image: root('src/asset/image'),
-      core: root('src/core'),
-      containers: root('src/containers'),
-      layouts: root('src/layouts'),
-      components: root('src/components'),
-      pages: root('src/pages'),
-      utils: root('src/utils'),
-      stores: root('src/stores'),
-      locales: root('src/locales'),
-      styles: root('src/styles'),
-      resources: root('src/resources'),
-      client: root('src/client'),
+  resolve : {
+    extensions : [ '.js', '.jsx' ],
+    modules : [ root('src'), root('src/pages'), 'node_modules' ],
+    alias : {
+      src : root('src'),
+      asset : root('src/asset'),
+      image : root('src/asset/image'),
+      core : root('src/core'),
+      containers : root('src/containers'),
+      layouts : root('src/layouts'),
+      components : root('src/components'),
+      pages : root('src/pages'),
+      utils : root('src/utils'),
+      stores : root('src/stores'),
+      locales : root('src/locales'),
+      styles : root('src/styles'),
+      resources : root('src/resources'),
+      client : root('src/client'),
     },
   },
-  plugins: [
-    new webpack.DefinePlugin({
-      GLOBAL_VARIABLES: getGlobalVariables(),
-    }),
-    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-  ],
+  plugins :
+          [
+            new webpack.DefinePlugin({
+              GLOBAL_VARIABLES : getGlobalVariables(),
+            }),
+            new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+          ],
 };
 
 module.exports.version = version;
