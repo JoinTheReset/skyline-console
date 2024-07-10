@@ -12,8 +12,8 @@
 
 import { observer, inject } from 'mobx-react';
 import Base from 'containers/List';
-import actionConfigs from './actions';
 import globalSegmentStore, { SegmentStore } from 'stores/masakari/segments';
+import actionConfigs from './actions';
 
 export class Segments extends Base {
   init() {
@@ -52,11 +52,11 @@ export class Segments extends Base {
       },
       ...(this.isAdminPage
         ? [
-          {
-            label: t('Project Name'),
-            name: 'project_name',
-          },
-        ]
+            {
+              label: t('Project Name'),
+              name: 'project_name',
+            },
+          ]
         : []),
     ];
   }
@@ -89,8 +89,8 @@ export class Segments extends Base {
     {
       title: t('Description'),
       dataIndex: 'description',
-      isHideable: true
-    }
+      isHideable: true,
+    },
   ];
 }
 

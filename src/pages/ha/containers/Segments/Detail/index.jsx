@@ -19,7 +19,7 @@ import HostDetail from '../../Hosts';
 
 export class SegmentsDetail extends Base {
   init() {
-    this.store = new SegmentStore;
+    this.store = new SegmentStore();
   }
 
   get name() {

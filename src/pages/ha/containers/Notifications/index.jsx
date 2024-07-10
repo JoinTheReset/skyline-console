@@ -13,7 +13,9 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
 import Base from 'containers/List';
-import globalNotificationStore, { NotificationStore } from 'stores/masakari/notifications';
+import globalNotificationStore, {
+  NotificationStore,
+} from 'stores/masakari/notifications';
 import { Link } from 'react-router-dom';
 
 export class Notifications extends Base {
@@ -47,7 +49,7 @@ export class Notifications extends Base {
         label: t('UUID'),
         name: 'notification_uuid',
       },
-    ]
+    ];
   }
 
   getColumns = () => [
@@ -55,10 +57,12 @@ export class Notifications extends Base {
       title: t('UUID'),
       dataIndex: 'notification_uuid',
       render: (value) => {
-        const path = this.getRoutePath("masakariNotificationDetail", {id: value});
-        return <Link to={path}>{value}</Link>
+        const path = this.getRoutePath('masakariNotificationDetail', {
+          id: value,
+        });
+        return <Link to={path}>{value}</Link>;
       },
-      isHideable: true
+      isHideable: true,
     },
     {
       title: t('Host'),
@@ -73,13 +77,20 @@ export class Notifications extends Base {
     {
       title: t('Status'),
       dataIndex: 'status',
-      isHideable: true
+      isHideable: true,
     },
     {
       title: t('Payload'),
       dataIndex: 'payload',
       isHideable: true,
-      render: (value) => Object.keys(value).map(it =><React.Fragment><div>{it}: {value[it]}</div></React.Fragment>)
+      render: (value) =>
+        Object.keys(value).map((it) => (
+          <>
+            <div>
+              {it}: {value[it]}
+            </div>
+          </>
+        )),
     },
   ];
 }
