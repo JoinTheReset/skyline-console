@@ -12,7 +12,7 @@
 
 import { inject, observer } from 'mobx-react';
 import Base from 'containers/TabDetail';
-import globalReverseStore from 'src/stores/designate/reverse';
+import globalReverseStore from 'stores/designate/reverse';
 import BaseDetail from './BaseDetail';
 import actionConfigs from '../actions';
 

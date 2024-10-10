@@ -12,7 +12,7 @@
 
 import { inject, observer } from 'mobx-react';
 import Base from 'containers/TabDetail';
-import { SegmentStore } from 'src/stores/masakari/segments';
+import { SegmentStore } from 'stores/masakari/segments';
 import BaseDetail from './BaseDetail';
 import actionConfigs from '../actions';
 import HostDetail from '../../Hosts';

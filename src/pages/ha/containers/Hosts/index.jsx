@@ -15,12 +15,21 @@ import { observer, inject } from 'mobx-react';
 import Base from 'containers/List';
 import globalHostStore, { HostStore } from 'src/stores/masakari/hosts';
 import { Link } from 'react-router-dom';
+import { masakariEndpoint } from 'client/client/constants';
 import actionConfigs from './actions';
 
 export class Hosts extends Base {
   init() {
     this.store = globalHostStore;
     this.downloadStore = new HostStore();
+  }
+
+  get endpoint() {
+    return masakariEndpoint();
+  }
+
+  get checkEndpoint() {
+    return true;
   }
 
   get policy() {

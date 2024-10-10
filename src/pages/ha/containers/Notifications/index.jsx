@@ -17,6 +17,7 @@ import globalNotificationStore, {
   NotificationStore,
 } from 'stores/masakari/notifications';
 import { Link } from 'react-router-dom';
+import { masakariEndpoint } from 'client/client/constants';
 
 export class Notifications extends Base {
   init() {
@@ -37,6 +38,14 @@ export class Notifications extends Base {
 
   get defaultSortKey() {
     return 'updated_at';
+  }
+
+  get endpoint() {
+    return masakariEndpoint();
+  }
+
+  get checkEndpoint() {
+    return true;
   }
 
   get searchFilters() {
@@ -85,11 +94,9 @@ export class Notifications extends Base {
       isHideable: true,
       render: (value) =>
         Object.keys(value).map((it) => (
-          <>
-            <div>
-              {it}: {value[it]}
-            </div>
-          </>
+          <div key={it}>
+            {it}: {value[it]}
+          </div>
         )),
     },
   ];

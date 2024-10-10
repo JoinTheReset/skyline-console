@@ -12,13 +12,14 @@
 
 import BaseLayout from 'layouts/Basic';
 import E404 from 'pages/base/containers/404';
-import Segments from '../containers/Segments';
+
 import Hosts from '../containers/Hosts';
-import Notifications from '../containers/Notifications';
-import SegmentsDetail from '../containers/Segments/Detail';
 import HostsDetail from '../containers/Hosts/Detail';
+import Notifications from '../containers/Notifications';
 import NotificationsDetail from '../containers/Notifications/Detail';
+import Segments from '../containers/Segments';
 import StepCreate from '../containers/Segments/actions/StepCreate';
+import SegmentsDetail from '../containers/Segments/Detail';
 
 const PATH = '/ha';
 export default [
@@ -26,7 +27,6 @@ export default [
     path: PATH,
     component: BaseLayout,
     routes: [
-      { path: `${PATH}/segments-admin`, component: Segments, exact: true },
       { path: `${PATH}/segments-admin`, component: Segments, exact: true },
       {
         path: `${PATH}/segments-admin/create-step-admin`,

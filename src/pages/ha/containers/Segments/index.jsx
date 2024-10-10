@@ -13,6 +13,7 @@
 import { observer, inject } from 'mobx-react';
 import Base from 'containers/List';
 import globalSegmentStore, { SegmentStore } from 'stores/masakari/segments';
+import { masakariEndpoint } from 'client/client/constants';
 import actionConfigs from './actions';
 
 export class Segments extends Base {
@@ -26,6 +27,14 @@ export class Segments extends Base {
       return 'os_compute_api:servers:index:get_all_tenants';
     }
     return 'os_compute_api:servers:index';
+  }
+
+  get endpoint() {
+    return masakariEndpoint();
+  }
+
+  get checkEndpoint() {
+    return true;
   }
 
   get name() {

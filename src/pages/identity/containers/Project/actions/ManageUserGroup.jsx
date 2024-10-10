@@ -20,7 +20,7 @@ import { GroupStore } from 'stores/keystone/user-group';
 import globalRoleStore from 'stores/keystone/role';
 import { ModalAction } from 'containers/Action';
 import {
-  nameDomainColumns,
+  groupDomainColumns,
   transferFilterOption,
 } from 'resources/keystone/domain';
 import { roleFilterOption } from 'resources/keystone/role';
@@ -115,7 +115,7 @@ export class ManageUserGroup extends ModalAction {
   static allowed = () => Promise.resolve(true);
 
   get leftGroupGroupTable() {
-    return nameDomainColumns;
+    return groupDomainColumns;
   }
 
   onClickSelect = (e) => {
@@ -142,7 +142,7 @@ export class ManageUserGroup extends ModalAction {
 
   get rightGroupGroupTable() {
     return [
-      ...nameDomainColumns,
+      ...groupDomainColumns,
       {
         title: t('Select Project Role'),
         dataIndex: 'id',
@@ -156,9 +156,11 @@ export class ManageUserGroup extends ModalAction {
     if (value.length && option.length) {
       groupRoles[groupId] = value;
     } else {
-      groupRoles[groupId] = {};
+      groupRoles[groupId] = [];
     }
-    this.setState({ groupRoles });
+    this.setState({ groupRoles }, () => {
+      this.formRef.current.validateFields();
+    });
   };
 
   onChangeUserGroup = (value) => {
@@ -174,6 +176,20 @@ export class ManageUserGroup extends ModalAction {
       }
     });
     this.setState(groupRoles);
+  };
+
+  validateGroup = () => {
+    const { groupRoles } = this.state;
+    if (!groupRoles) {
+      return Promise.resolve();
+    }
+    const emptyGroupRole = Object.keys(groupRoles).find((gId) => {
+      return !groupRoles[gId].length;
+    });
+    if (emptyGroupRole) {
+      return Promise.reject(t('Please set at least one role!'));
+    }
+    return Promise.resolve();
   };
 
   get defaultValue() {
@@ -213,6 +229,7 @@ export class ManageUserGroup extends ModalAction {
         onChange: this.onChangeUserGroup,
         wrapperCol: this.wrapperCol,
         loading: this.userGroupStore.list.isLoading,
+        validator: this.validateGroup,
       },
     ];
   }
