@@ -2,8 +2,8 @@
 name: Docker build-push
 on:
   workflow_run:
-    workflows: [Build]
-    types: [completed]
+    workflows: ["Build"]
+    types: [requested]
     branches: [develop]
 env:
   ARTIFACT_FOLDER: static-release
