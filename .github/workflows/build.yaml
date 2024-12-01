@@ -7,11 +7,6 @@ on:
     branches:
       - 'develop'
 
-env:
-  ARTIFACT_FOLDER: static-release
-  TF_VAR_ingress_domain: dashboard.staging.core.resetdata.com
-  TF_VAR_docker_image_uri: harbor.core.resetdata.com/dashboard/frontend
-  TF_VAR_docker_registry_server: harbor.core.resetdata.com
 jobs:
   eslint-check:
     runs-on: ubuntu-latest
@@ -62,77 +57,4 @@ jobs:
           path: |
             skyline_console/static
             Dockerfile
-  build:
-    runs-on: ubuntu-latest
-    needs: build-dist
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: ${{ env.ARTIFACT_FOLDER }}
-          github-token: ${{ secrets.GHE_ARTIFACT_PAT }}
-      - 
-        run: ls -lah
-      -
-        name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-      -
-        name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      - 
-        name: Login to Harbor Registry
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.HARBOR_ROBOT_USER }}
-          password: ${{ secrets.HARBOR_ROBOT_PASS }}
-          registry: ${{ env.TF_VAR_docker_registry_server }}
-      - 
-        name: Push docker image to Harbor
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          push: true
-          tags: ${{ env.TF_VAR_docker_image_uri }}:${{ github.sha }}
-###
-# Terraform Deploy
-###
-  deployment:
-    needs: build
-    environment: staging
-    runs-on: ubuntu-latest
-    env:
-      TF_WORKSPACE: customer-dashboard-staging
-      TF_VAR_k8s_cluster_endpoint: ${{ secrets.MASTER_ZONE_K8S_CLUSTER_ENDPOINT }}
-      TF_VAR_k8s_cluster_certificate: ${{ secrets.MASTER_ZONE_K8S_CLUSTER_CERTIFICATE }}
-      TF_VAR_k8s_client_key: ${{ secrets.MASTER_ZONE_K8S_CLIENT_KEY }}
-      TF_VAR_k8s_cluster_ca_certificate: ${{ secrets.MASTER_ZONE_K8S_CLUSTER_CA_CERTIFICATE }}
-      TF_VAR_git_sha: ${{ github.sha }}
-      TF_VAR_docker_registry_username: ${{ secrets.HARBOR_ROBOT_USER }}
-      TF_VAR_docker_registry_password: ${{ secrets.HARBOR_ROBOT_PASS }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: hashicorp/setup-terraform@v3
-        with:
-          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-          terraform_version: 1.5.7
-      - name: Terraform fmt
-        id: fmt
-        working-directory: terraform
-        run: terraform fmt -check
-      - name: Terraform Init
-        id: init
-        working-directory: terraform
-        run: terraform init
-      - name: Terraform Validate
-        id: validate
-        working-directory: terraform
-        run: terraform validate
-      - name: Terraform Apply
-        timeout-minutes: 10
-        working-directory: terraform
-        run: terraform apply -auto-approve -input=false
-      - name: Terraform Output
-        id: tf_output
-        working-directory: terraform
-        run: terraform output
-
 ...
