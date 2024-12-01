@@ -198,7 +198,7 @@ export class Login extends Component {
       required: false,
       message: t('Please input your Username!'),
       render: () => <Input placeholder={t('Username')} />,
-      hidden: true,
+      hidden: false,
     };
     const passwordItem = {
       name: 'password',
